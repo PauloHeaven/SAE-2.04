@@ -43,17 +43,18 @@ class ArtmathController extends AbstractController
     /**
      * @Route("/artmath", name="app_artmath")
      */
-    public function index(): Response
+    public function index($erreur = ""): Response
     {
+
         return $this->render('artmath/index.html.twig', [
-            'fichier' => '',
+            'erreur' => $erreur
         ]);
     }
 
     /**
-     * @Route("/calculer", name="calculer")
+     * @Route("/calculerKoch", name="calculerKoch")
      */
-    public function calculer(Request $request): Response
+    public function calculerKoch(Request $request): Response
     {
         // Récupère les paramètres issus du formulaire (on indique le champ name)
         $dimension = $request -> request -> get("dimension") ;
@@ -61,9 +62,8 @@ class ArtmathController extends AbstractController
         $calculer  = $request -> request -> get("calculer");
         $imprimer  = $request -> request -> get("imprimer");
 
-
         // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
-        $process = new Process(['python3','koch.py',$dimension]);
+        $process = new Process(['python3','koch.py', $dimension]);
         $process -> run();
         // Récupère la valeur de retour renvoyé par le script python
         $fichier=$process->getOutput();
@@ -74,11 +74,55 @@ class ArtmathController extends AbstractController
 
         // A t'on appuyé sur calculer ?
         if ($calculer!=NULL)
-            return $this->render('artmath/index.html.twig', [
+            return $this->render('artmath/koch.html.twig', [
                 'fichier' => $fichier,
             ]);
         else {
             // On a appuyé sur imprimer
+            return $this->render('artmath/imprimer.html.twig', [
+                'fichier' => $fichier,
+            ]);
+        }
+    }
+    /**
+     * @Route("/calculerNees", name="calculerNees")
+     */
+    public function calculerNees(Request $request): Response
+    {
+        // Récupère les paramètres issus du formulaire (on indique le champ name)
+        $amplitude = $request -> request -> get("amplitude");
+        $angle = $request -> request -> get("angle");
+        $colonnes = $request -> request -> get("colonnes");
+        $lignes = $request -> request -> get("lignes");
+        // Pour les boutons : si appui contenu champ value sinon NULL
+        $calculer  = $request -> request -> get("calculer");
+        $imprimer  = $request -> request -> get("imprimer");
+
+        // if(!isset($colonnes) OR !isset($lignes)) {
+        //     $erreur = "Les champs doivent être remplis";
+        //     return $this->render('artmath/index.html.twig', [
+        //         'erreur' => $erreur
+        //     ]);
+        // } // Vérification de champs à faire fonctionner
+
+        // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
+        $process = new Process(['python3','nees_carre.py', $amplitude, $angle, $colonnes, $lignes]);
+        $process -> run();
+        // Récupère la valeur de retour renvoyé par le script python
+        $fichier='reponse.png';
+
+        // Retourne un message si l'exécution c'est mal passée
+        if (!$process->isSuccessful())
+            return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());    
+
+        // A-t-on appuyé sur Calculer ?
+        if ($calculer!=NULL)
+            return $this->render('artmath/nees.html.twig', [
+                'fichier' => $fichier,
+                'dump' => dump($request)
+            ]);
+        else {
+            // On a appuyé sur Imprimer
             return $this->render('artmath/imprimer.html.twig', [
                 'fichier' => $fichier,
             ]);
