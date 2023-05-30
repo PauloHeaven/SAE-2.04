@@ -119,7 +119,6 @@ class ArtmathController extends AbstractController
         if ($calculer!=NULL)
             return $this->render('artmath/nees.html.twig', [
                 'fichier' => $fichier,
-                'dump' => dump($request)
             ]);
         else {
             // On a appuyé sur Imprimer
