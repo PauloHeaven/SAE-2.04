@@ -6,43 +6,11 @@
 <div class="koch example-wrapper">
     <h2>Fonction de Koch <i class="fa-solid fa-play"></i></h2>
     <!-- C'est grâce à l'attribut name que l'on peut récupérer la valeur associée dans symfony -->
-    <form id="form_koch" method="post" action="/calculerKoch">
-        <div>
-            <label for="dimension" class="form-label">Dimension</label>
-                <input type="range" class="form-range" min="0" max="6" step="1" id="dimension" name="dimension">
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary" name="calculer" value="1">Calculer</button>
-            <button type="submit" class="btn btn-danger" name="imprimer" value="1">Imprimer</button>
-        </div>
-    </form>
+    {{form(formKoch)}}
 </div>
 <div class="nees example-wrapper">
     <h2>Carré de Nees <i class="fa-solid fa-play"></i></h2>
     <!-- C'est grâce à l'attribut name que l'on peut récupérer la valeur associée dans symfony -->
-    <form id="form_nees" method="post" action="/calculerNees">
-        <div>
-            <label for="amplitude" class="form-label">Amplitude du hasard</label>
-                <input type="range" class="form-range" min="0" max="1" step="0.05" id="amplitude" name="amplitude">
-        </div>
-        <div>
-            <label for="angle" class="form-label">Amplitude du hasard de l'angle</label>
-                <input type="range" class="form-range" min="0" max="1" step="0.05" id="angle" name="angle">
-        </div>
-        <div>
-            <label for="colonnes" class="form-label">Nombre de colonnes</label>
-                <input type="number" class="form-text" min="0" max="50" step="1" id="colonnes" name="colonnes" required>
-        </div>
-        <div>
-            <label for="lignes" class="form-label">Nombre de lignes</label>
-                <input type="number" class="form-text" min="0" max="50" step="1" id="lignes" name="lignes" required>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-primary" name="calculer" value="1">Calculer</button>
-            <button type="submit" class="btn btn-danger" name="imprimer" value="1">Imprimer</button>
-        </div>
-    </form>
+    {{form(formNees)}}
 </div>
-<script type="text/javascript" src="js/jquery-3.7.0.min.js"></script>
-<script type="text/javascript" src="js/menu.js"></script>
 {% endblock %}

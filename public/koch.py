@@ -45,11 +45,11 @@ def motif(fig,dim,x1,y1,x2,y2):
 dimension=int(sys.argv[1]) # Premier paramètre : dimension que l'on convertit en entier
 
 # Dessine l
-fig=plt.figure();
+fig=plt.figure()
 motif(fig,dimension,0,0,1,0)
 
 # Enregistre la figure
 fichier='reponse.svg'
 fig.savefig(fichier)
 # Ecrit le nom du fichier pour celui qui appelle ce programme
-print (fichier)
+print(fichier)

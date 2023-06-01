@@ -18,9 +18,10 @@ a {
     color: #dee2e6;
     transform-origin: center;
     transform: rotate(0);
-    transition: all .1s;
+    transition: all .2s;
 }
 
 .open {
     transform: rotate(90deg);
+    transition: all .2s;
 }

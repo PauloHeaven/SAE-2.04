@@ -16,6 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+use App\Entity\VonKoch;
+use App\Entity\Nees;
+use App\Form\Type\VonKochType;
+use App\Form\Type\NeesType;
+
 // Récupération des données d'un formulaire
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,11 +49,28 @@ class ArtmathController extends AbstractController
     /**
      * @Route("/artmath", name="app_artmath")
      */
-    public function index($erreur = ""): Response
+    public function index(Request $request): Response
     {
+        $koch = new VonKoch();
+        $koch->setDimension(3);
 
-        return $this->render('artmath/index.html.twig', [
-            'erreur' => $erreur
+        $formKoch = $this->createForm(VonKochType::class, $koch, [
+            'attr' => ['id' => 'form_koch'],
+            'action' => $this->generateUrl('calculerKoch')
+        ]);
+
+        $nees = new Nees();
+        $nees->setAmplitude(0.5);
+        $nees->setAngle(0.5);
+
+        $formNees = $this->createForm(NeesType::class, $nees, [
+            'attr' => ['id' => 'form_nees'],
+            'action' => $this->generateUrl('calculerNees')
+        ]);
+
+        return $this->renderForm('artmath/index.html.twig', [
+            'formKoch' => $formKoch,
+            'formNees' => $formNees
         ]);
     }
 
@@ -57,10 +80,7 @@ class ArtmathController extends AbstractController
     public function calculerKoch(Request $request): Response
     {
         // Récupère les paramètres issus du formulaire (on indique le champ name)
-        $dimension = $request -> request -> get("dimension") ;
-        // Pour les boutons : si appui contenu champ value sinon NULL
-        $calculer  = $request -> request -> get("calculer");
-        $imprimer  = $request -> request -> get("imprimer");
+        $dimension = $request -> request -> all()['von_koch']['dimension'];
 
         // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
         $process = new Process(['python3','koch.py', $dimension]);
@@ -70,12 +90,20 @@ class ArtmathController extends AbstractController
 
         // Retourne un message si l'éxécution c'est mal passée
         if (!$process->isSuccessful())
-            return new Response ("Erreur lors de l'éxécution du script Python :<br>".$process->getErrorOutput());    
+            return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());    
+
+        $koch = new VonKoch();
+        $koch->setDimension(3);
+
+        $formKoch = $this->createForm(VonKochType::class, $koch, [
+            'action' => $this->generateUrl('calculerKoch')
+        ]);
 
         // A t'on appuyé sur calculer ?
-        if ($calculer!=NULL)
-            return $this->render('artmath/koch.html.twig', [
+        if (!isset($request -> request -> all()['von_koch']['imprimer']))
+            return $this->renderForm('artmath/koch.html.twig', [
                 'fichier' => $fichier,
+                'formKoch' => $formKoch
             ]);
         else {
             // On a appuyé sur imprimer
@@ -90,20 +118,17 @@ class ArtmathController extends AbstractController
     public function calculerNees(Request $request): Response
     {
         // Récupère les paramètres issus du formulaire (on indique le champ name)
-        $amplitude = $request -> request -> get("amplitude");
-        $angle = $request -> request -> get("angle");
-        $colonnes = $request -> request -> get("colonnes");
-        $lignes = $request -> request -> get("lignes");
-        // Pour les boutons : si appui contenu champ value sinon NULL
-        $calculer  = $request -> request -> get("calculer");
-        $imprimer  = $request -> request -> get("imprimer");
+        $amplitude = $request -> request -> all()['nees']['amplitude'];
+        $angle = $request -> request -> all()['nees']['angle'];
+        $colonnes = $request -> request -> all()['nees']['colonnes'];
+        $lignes = $request -> request -> all()['nees']['lignes'];
 
-        // if(!isset($colonnes) OR !isset($lignes)) {
-        //     $erreur = "Les champs doivent être remplis";
-        //     return $this->render('artmath/index.html.twig', [
-        //         'erreur' => $erreur
-        //     ]);
-        // } // Vérification de champs à faire fonctionner
+        if(!isset($colonnes) OR !isset($lignes)) {
+            $erreur = "Les champs doivent être remplis";
+            return $this->render('artmath/index.html.twig', [
+                'erreur' => $erreur
+            ]);
+        } // Vérification de champs à faire fonctionner
 
         // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
         $process = new Process(['python3','nees_carre.py', $amplitude, $angle, $colonnes, $lignes]);
@@ -115,10 +140,20 @@ class ArtmathController extends AbstractController
         if (!$process->isSuccessful())
             return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());    
 
+        $nees = new Nees();
+        $nees->setAmplitude(0.5);
+        $nees->setAngle(0.5);
+
+        $formNees = $this->createForm(NeesType::class, $nees, [
+            'action' => $this->generateUrl('calculerNees')
+        ]);
+
+
         // A-t-on appuyé sur Calculer ?
-        if ($calculer!=NULL)
-            return $this->render('artmath/nees.html.twig', [
+        if (!isset($request -> request -> all()['nees']['imprimer']))
+            return $this->renderForm('artmath/nees.html.twig', [
                 'fichier' => $fichier,
+                'formNees' => $formNees
             ]);
         else {
             // On a appuyé sur Imprimer
