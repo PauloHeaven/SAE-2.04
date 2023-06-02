@@ -137,8 +137,9 @@ class ArtmathController extends AbstractController
         $fichier='reponse.png';
 
         // Retourne un message si l'exécution c'est mal passée
-        if (!$process->isSuccessful())
-            return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());    
+        // if (!$process->isSuccessful())
+        //     return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());
+        // Nous devons commenter cette fonction pour une exécution sur le serveur web, car pygame vérifie la présence d'une carte son. Il génère un avertissement et le programme s'exécute quand même, mais c'est suffisant pour faire rater l'affichage de la page.
 
         $nees = new Nees();
         $nees->setAmplitude(0.5);
