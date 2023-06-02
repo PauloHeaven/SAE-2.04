@@ -131,7 +131,7 @@ class ArtmathController extends AbstractController
         } // Vérification de champs à faire fonctionner
 
         // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
-        $process = new Process(['python3','nees_carre.py', $amplitude, $angle, $colonnes, $lignes]);
+        $process = new Process(['python3','nees_carre.py', $amplitude, $angle, $colonnes, $lignes, "2>/dev/null"]);
         $process -> run();
         // Récupère la valeur de retour renvoyé par le script python
         $fichier='reponse.png';
