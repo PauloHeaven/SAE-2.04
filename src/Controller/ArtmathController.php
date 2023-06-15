@@ -41,8 +41,7 @@ class ArtmathController extends AbstractController
      */
     public function racine() : Response
     {
-        // Redirige vers /artmath si on va sur le site sans
-        //  indiquer le nom de la route
+        // Redirige vers /artmath si on va sur le site sans indiquer le nom de la route
         return $this->redirectToRoute('app_artmath');
     }
 
@@ -85,10 +84,10 @@ class ArtmathController extends AbstractController
         // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
         $process = new Process(['python3','koch.py', $dimension]);
         $process -> run();
-        // Récupère la valeur de retour renvoyé par le script python
+        // Récupère la valeur de retour renvoyée par le script Python, qui indique le nom du fichier
         $fichier=$process->getOutput();
 
-        // Retourne un message si l'éxécution c'est mal passée
+        // Retourne un message si l'éxécution s'est mal passée
         if (!$process->isSuccessful())
             return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());    
 
@@ -118,28 +117,19 @@ class ArtmathController extends AbstractController
     public function calculerNees(Request $request): Response
     {
         // Récupère les paramètres issus du formulaire (on indique le champ name)
-        $amplitude = $request -> request -> all()['nees']['amplitude'];
-        $angle = $request -> request -> all()['nees']['angle'];
-        $colonnes = $request -> request -> all()['nees']['colonnes'];
-        $lignes = $request -> request -> all()['nees']['lignes'];
+        $amplitude = $request->request->all()['nees']['amplitude'];
+        $angle = $request->request->all()['nees']['angle'];
+        $colonnes = $request->request->all()['nees']['colonnes'];
+        $lignes = $request->request->all()['nees']['lignes'];
 
-        if(!isset($colonnes) OR !isset($lignes)) {
-            $erreur = "Les champs doivent être remplis";
-            return $this->render('artmath/index.html.twig', [
-                'erreur' => $erreur
-            ]);
-        } // Vérification de champs à faire fonctionner
-
-        // Oui : Appelle le script Python koch.py qui se trouve dans le répertoire /public
+        // Appelle le script Python koch.py qui se trouve dans le répertoire /public
         $process = new Process(['python3','nees_carre.py', $amplitude, $angle, $colonnes, $lignes, "2>/dev/null"]);
-        $process -> run();
-        // Récupère la valeur de retour renvoyé par le script python
+        $process->run();
         $fichier='reponse.png';
 
-        // Retourne un message si l'exécution c'est mal passée
-        // if (!$process->isSuccessful())
-        //     return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());
-        // Nous devons commenter cette fonction pour une exécution sur le serveur web, car pygame vérifie la présence d'une carte son. Il génère un avertissement et le programme s'exécute quand même, mais c'est suffisant pour faire rater l'affichage de la page.
+        // Retourne un message si l'exécution s'est mal passée
+        if (!$process->isSuccessful())
+            return new Response ("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput());
 
         $nees = new Nees();
         $nees->setAmplitude(0.5);
@@ -148,7 +138,6 @@ class ArtmathController extends AbstractController
         $formNees = $this->createForm(NeesType::class, $nees, [
             'action' => $this->generateUrl('calculerNees')
         ]);
-
 
         // A-t-on appuyé sur Calculer ?
         if (!isset($request -> request -> all()['nees']['imprimer']))
