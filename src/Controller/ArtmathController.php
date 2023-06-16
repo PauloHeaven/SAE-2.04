@@ -67,7 +67,7 @@ class ArtmathController extends AbstractController
             'action' => $this->generateUrl('calculerNees')
         ]);
 
-        return $this->renderForm('artmath/index.html.twig', [
+        return $this->render('artmath/index.html.twig', [
             'formKoch' => $formKoch,
             'formNees' => $formNees
         ]);
@@ -100,7 +100,7 @@ class ArtmathController extends AbstractController
 
         // A t'on appuyé sur calculer ?
         if (!isset($request -> request -> all()['von_koch']['imprimer']))
-            return $this->renderForm('artmath/koch.html.twig', [
+            return $this->render('artmath/koch.html.twig', [
                 'fichier' => $fichier,
                 'formKoch' => $formKoch
             ]);
@@ -141,7 +141,7 @@ class ArtmathController extends AbstractController
 
         // A-t-on appuyé sur Calculer ?
         if (!isset($request -> request -> all()['nees']['imprimer']))
-            return $this->renderForm('artmath/nees.html.twig', [
+            return $this->render('artmath/nees.html.twig', [
                 'fichier' => $fichier,
                 'formNees' => $formNees
             ]);
