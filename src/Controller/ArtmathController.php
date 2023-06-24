@@ -16,11 +16,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 use App\Entity\VonKoch;
 use App\Entity\Nees;
+use App\Entity\Johnson;
 use App\Form\Type\VonKochType;
 use App\Form\Type\NeesType;
+use App\Form\Type\JohnsonType;
 
 // Récupération des données d'un formulaire
 use Symfony\Component\HttpFoundation\Request;
@@ -67,9 +68,24 @@ class ArtmathController extends AbstractController
             'action' => $this->generateUrl('calculerNees')
         ]);
 
+        $johnson = new Johnson();
+        $johnson->setColonnes(5);
+        $johnson->setDecalage(0);
+        $johnson->setEcart(50);
+        $johnson->setAngle(12);
+        $johnson->setAngledecoratif(0.005);
+        $johnson->setRayondecoratif(0.4);
+        $johnson->setDecalagedecoratif(10);
+
+        $formJohnson = $this->createForm(JohnsonType::class, $johnson, [
+            'attr' => ['id' => 'form_johnson'],
+            'action' => $this->generateUrl('calculerJohnson')
+        ]);
+
         return $this->render('artmath/index.html.twig', [
             'formKoch' => $formKoch,
-            'formNees' => $formNees
+            'formNees' => $formNees,
+            'formJohnson' => $formJohnson
         ]);
     }
 
@@ -144,6 +160,65 @@ class ArtmathController extends AbstractController
             return $this->render('artmath/nees.html.twig', [
                 'fichier' => $fichier,
                 'formNees' => $formNees
+            ]);
+        else {
+            // On a appuyé sur Imprimer
+            return $this->render('artmath/imprimer.html.twig', [
+                'fichier' => $fichier,
+            ]);
+        }
+    }
+    /**
+     * @Route("/calculerJohnson", name="calculerJohnson")
+     */
+    public function calculerJohnson(Request $request): Response
+    {
+        // Récupère les paramètres issus du formulaire (on indique le champ name)
+        $colonnes = $request->request->all()['johnson']['colonnes'];
+        $decalage = $request->request->all()['johnson']['decalage'];
+        $ecart = $request->request->all()['johnson']['ecart'];
+        $angle = $request->request->all()['johnson']['angle'];
+        $angledecoratif = $request->request->all()['johnson']['angledecoratif'];
+        $rayondecoratif = $request->request->all()['johnson']['rayondecoratif'];
+        $decalagedecoratif = $request->request->all()['johnson']['decalagedecoratif'];
+        if(!isset($request->request->all()['johnson']['couleursaleatoires'])) {
+            $couleursaleatoires = 0;
+        } else {
+            $couleursaleatoires = 1;
+        };
+        $couleur1 = $request->request->all()['johnson']['couleur1'];
+        $couleur2 = $request->request->all()['johnson']['couleur2'];
+        $couleur3 = $request->request->all()['johnson']['couleur3'];
+        $couleur4 = $request->request->all()['johnson']['couleur4'];
+        $couleur5 = $request->request->all()['johnson']['couleur5'];
+
+        // Appelle le script Python koch.py qui se trouve dans le répertoire /public
+        $process = new Process(['python3','olivia_johnson_2018.py', $colonnes, $decalage, $ecart, $angle, $angledecoratif, $rayondecoratif, $decalagedecoratif, $couleursaleatoires, $couleur1, $couleur2, $couleur3, $couleur4, $couleur5]);
+        $process->run();
+        $fichier='reponse.png';
+
+        // Retourne un message si l'exécution s'est mal passée
+        if (!$process->isSuccessful())
+            return new Response("Erreur lors de l'exécution du script Python :<br>".$process->getErrorOutput()."<br>".dump($request));
+
+        $johnson = new Johnson();
+        $johnson->setColonnes(5);
+        $johnson->setDecalage(0);
+        $johnson->setEcart(50);
+        $johnson->setAngle(12);
+        $johnson->setAngledecoratif(0.005);
+        $johnson->setRayondecoratif(0.4);
+        $johnson->setDecalagedecoratif(5);
+
+        $formJohnson = $this->createForm(JohnsonType::class, $johnson, [
+            'action' => $this->generateUrl('calculerJohnson')
+        ]);
+
+        // A-t-on appuyé sur Calculer ?
+        if (!isset($request -> request -> all()['johnson']['imprimer']))
+            return $this->render('artmath/johnson.html.twig', [
+                'fichier' => $fichier,
+                'formJohnson' => $formJohnson
             ]);
         else {
             // On a appuyé sur Imprimer

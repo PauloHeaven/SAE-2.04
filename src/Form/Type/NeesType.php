@@ -37,6 +37,7 @@ class NeesType extends AbstractType
                 'placeholder' => '10',
                 'min' => 1
             ],
+            'html5' => True,
             'constraints' => [
                 new NotBlank([
                     "message" => "Veuillez entrer un nombre"
@@ -47,6 +48,7 @@ class NeesType extends AbstractType
                 'placeholder' => '10',
                 'min' => 1
             ],
+            'html5' => True,
             'constraints' => [
                 new NotBlank([
                     "message" => "Veuillez entrer un nombre"
