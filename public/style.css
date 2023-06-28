@@ -9,7 +9,7 @@ body {
     margin: 1em auto;
     max-width: 800px;
     width: 95%;
-    font-size: 20px/2;
+    font-size: 1.4rem;
 }
 
 .example-wrapper code {
@@ -46,6 +46,6 @@ a {
     margin: 2% auto;
 }
 
-input[type=text], input[type=number] {
+input[type=text], input[type=number], input[type=checkbox] {
     margin-left: 10px;
 }
