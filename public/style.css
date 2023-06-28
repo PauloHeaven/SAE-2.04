@@ -51,6 +51,6 @@ a:hover {
     margin: 2% auto;
 }
 
-input[type=text], input[type=number], input[type=checkbox] {
+input[type=text], input[type=number], input[type=checkbox], input[type=color] {
     margin-left: 10px;
 }
