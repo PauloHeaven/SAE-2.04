@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Art mathématique{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h3>Présentation et style</h3>
+    <p>
+        Cette figure est une des compositions de 2018 d’Olivia Odom-Johnson.
+        Elle se compose originalement de 5 colonnes de traits dont l’inclinaison augmente en permanence selon un angle constant. En y regardant d’un peu plus près, on aperçoit, en plus des traits réguliers, des traits décoratifs plus aléatoires.
+        Pour la reproduire en Python, j’ai utilisé la bibliothèque PyGame. Faite pour créer des jeux, elle permet de dessiner et d’animer n’importe quelle forme.<br>
+        La manière que j’ai trouvée de reproduire une colonne est de dessiner deux tracés constitués de traits à dimensions et inclinaison constantes, et deux autres constitués de traits dont l'angle, la longueur et le décalage en ordonnée varient pour se distinguer.<br>
+        Les couleurs sont générées aléatoirement par colonne. PyGame supporte les couleurs au format RGB : on génère donc des tuples de 3 valeurs aléatoires allant de 0 à 255.
+    </p>
+    <h3>Fonctionnement</h3>
+    <p>
+        Les dimensions de l'image sont définies à 1200/1200 pixels. Tous les paramètres sont lus en argument de l'exécutable grâce à la bibliothèque <code>sys</code>. Les traits ont une largeur de 100 pixels. Pour pivoter, dans un sens, un cosinus est ajouté à l'abscisse et un sinus à l'ordonnée des coordonnées de chaque trait, sur 150 itérations. Dans l'autre sens, ils sont soustraits. Chaque colonne possède également des traits décoratifs, qui se différencient par l'ajout de hasard à leur angle de variation et leur longueur.<br>
+        Les itérations sont orchestrées par 2 boucles pour : la première se charge d'initialiser l'ordonnée de départ (0 = en haut de la surface dans PyGame) et d'exécuter la boucle qui trace les colonnes. Celle-ci, à son tour, trace 150x 4 traits (dans un sens, dans l'autre, et les traits de décoration), selon les formules :<br>
+        <code>x1 = x + R * cos(teta1)</code><br>
+        <code>y1 = y + R * sin(teta1)</code><br>
+        <code>x2 = x - R * cos(teta1)</code><br>
+        <code>y2 = y - R * sin(teta1)</code><br>
+        À chaque coordonnée est ajoutée ou retirée une petite valeur (le sinus ou le cosinus) qui, multipliée par la longueur (100 px), amplifie la rotation. Ainsi est créé le mouvement des traits. Dans le cas des traits de décoration, on utilise la fonction <code>uniform</code> de la bibliothèque <code>random</code> pour ajouter un nombre à virgule de petite valeur. On l'utilise aussi sur la longueur de ces traits.
+    </p>
+    <h3>Paramètres ajustables</h3>
+    J'ai volontairement, pour ne pas dénaturer la figure, fixé la longueur des traits à 100 px, qui donne une fidèle reproduction de l'original, ainsi que le nombre de traits à 150, suffisants pour une très grande densité.<br>
+    On peut ajuster :
+    <ul>
+        <li>Le nombre de colonnes, entre 1 et 5. Pour ce faire, je calcule dans le programme par combien l'écran est divisé en ajoutant 1, pour obtenir les coordonnées d'abscisse des colonnes, que j'utilise dans un tableau. Les valeurs servent dans la première boucle et c'est ce qui me permet de les centrer.</li>
+        <li>Le décalage de l'angle des tracés. Sur la figure originale, et par défaut, l'inclinaison est uniforme. On peut cependant le faire varier en ajoutant entre 0 et 0,1 à la valeur de l'angle par pas de 0,005. Cela met en valeur individuellement les colimaçons.</li>
+        <li>L'espacement vertical entre deux traits, pour aérer plus ou moins la figure.</li>
+        <li>L'angle d'inclinaison que prend chaque trait, en fractions de pi.</li>
+        <li>Le hasard de l'angle des traits décoratifs : cela permet d'ajuster entre 0,001 et 0,1 la valeur ajoutée ou soustraite à l'angle des traits décoratifs.</li>
+        <li>La valeur minimale à laquelle commence la longueur d'un trait décoratif. Cette valeur (entre 0,4 et 0,9) sera multipliée à la longueur initiale des traits (100 px) et le résultat sera soustrait à cette longueur. Cela permet donc d'avoir des traits d'une longueur choisie par l'ordinateur entre 0,4 et 0,9x le rayon original.</li>
+        <li>Le décalage en ordonnée des traits décoratifs : une valeur aléatoire entre 1 et 10 px leur sera ajoutée ou soustraite.</li>
+        <li>Les couleurs : si l'on veut les choisir soi-même, on peut décocher la case et les choisir grâce aux palettes de couleur. Le navigateur renvoyant une valeur hexadécimale (standard HTML5), la conversion au format RGB est effectuée dans le programme.</li>
+    </ul>
+    <h3>Code</h3>
+    Tout mon projet, en plus de ce site, est consultable sur <a href="https://github.com/PauloHeaven/SAE-2.04/blob/main/public/olivia_johnson_2018.py">GitHub</a>.
+</div>
+{% endblock %}

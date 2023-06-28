@@ -227,4 +227,11 @@ class ArtmathController extends AbstractController
             ]);
         }
     }
+    /**
+     * @Route("/informationsJohnson", name="app_informationsJohnson")
+     */
+    public function informationsJohnson() : Response
+    {
+        return $this->render('artmath/johnson_informations.html.twig');
+    }
 }

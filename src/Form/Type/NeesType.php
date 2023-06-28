@@ -33,7 +33,6 @@ class NeesType extends AbstractType
                 ],
             ])
             ->add('colonnes', NumberType::class, ['attr' => [
-                'class' => 'form-text',
                 'placeholder' => '10',
                 'min' => 1
             ],
@@ -44,7 +43,6 @@ class NeesType extends AbstractType
                 ]),
             ]])
             ->add('lignes', NumberType::class, ['attr' => [
-                'class' => 'form-text',
                 'placeholder' => '10',
                 'min' => 1
             ],

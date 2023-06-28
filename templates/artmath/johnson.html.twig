@@ -3,13 +3,9 @@
 {% block title %}Art mathématique{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    h1 { text-align: center; }
-</style>
 <div class="example-wrapper">
     <h2>Colonnes d'Olivia O. Johnson</h2>
+    <p>Plus de détails sur le fonctionnement de cette figure <a href="{{ url('app_informationsJohnson') }}">ici</a></p>
     <!-- C'est grâce à l'attribut name que l'on peut récupérer la valeur associée dans symfony -->
     {{form(formJohnson)}}
     <h2> Résultat :</h2>

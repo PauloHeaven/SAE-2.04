@@ -33,20 +33,14 @@ class JohnsonType extends AbstractType
                     'class' => 'form-range',
                     'min' => 0,
                     'max' => 0.01,
-                    'step'=> 0.001
+                    'step'=> 0.0005
                 ],
             ])
             ->add('ecart', NumberType::class, [
-                'label' => 'Espace en pixels entre les traits',
-                'attr' => [
-                    'class' => 'form-input',
-                ],
+                'label' => 'Espace en pixels entre les traits'
             ])
             ->add('angle', NumberType::class, [
-                'label' => 'Angle : pi/',
-                'attr' => [
-                    'class' => 'form-input',
-                ],
+                'label' => 'Différence d\'angle entre deux traits : pi/'
             ])
             ->add('angledecoratif', RangeType::class, [
                 'label' => 'Hasard de l\'angle des traits décoratifs',

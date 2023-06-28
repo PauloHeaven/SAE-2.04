@@ -6,7 +6,10 @@ body {
 }
 
 .example-wrapper {
-    margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif;
+    margin: 1em auto;
+    max-width: 800px;
+    width: 95%;
+    font-size: 20px/2;
 }
 
 .example-wrapper code {
@@ -41,4 +44,8 @@ a {
     width: 100%;
     min-height: 800px;
     margin: 2% auto;
+}
+
+input[type=text], input[type=number] {
+    margin-left: 10px;
 }
